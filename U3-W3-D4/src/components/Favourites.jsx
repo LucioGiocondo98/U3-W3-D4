@@ -1,49 +1,36 @@
-import {
-  Container,
-  Row,
-  Col,
-  ListGroup,
-  ListGroupItem,
-  Button,
-} from 'react-bootstrap'
-import { StarFill } from 'react-bootstrap-icons'
-import { useSelector, useDispatch } from 'react-redux'
-import { Link, useNavigate } from 'react-router-dom'
+import { useSelector, useDispatch } from "react-redux";
+import { removeFromFavourite } from "../redux/actions";
+import { Container, ListGroup, Button, Alert } from "react-bootstrap";
 
 const Favourites = () => {
-  const favourites = useSelector((state) => state.favourite.list)
-  const dispatch = useDispatch()
-
-  const navigate = useNavigate()
+  const favourites = useSelector((state) => state.favourites.list);
+  const dispatch = useDispatch();
 
   return (
-    <Container>
-      <Row>
-        <Col xs={10} className="mx-auto my-3">
-          <h1>Favourites</h1>
-          <Button onClick={() => navigate('/')}>Home</Button>
-        </Col>
-        <Col xs={10} className="mx-auto my-3">
-          <ListGroup>
-            {favourites.map((fav, i) => (
-              <ListGroupItem key={i}>
-                <StarFill
-                  className="mr-2"
-                  onClick={() =>
-                    dispatch({
-                      type: 'REMOVE_FROM_FAVOURITE',
-                      payload: fav,
-                    })
-                  }
-                />
-                <Link to={'/' + fav}>{fav}</Link>
-              </ListGroupItem>
-            ))}
-          </ListGroup>
-        </Col>
-      </Row>
+    <Container className="mt-4">
+      <h2>Lista Preferiti</h2>
+      <ListGroup>
+        {favourites.length === 0 ? (
+          <Alert variant="info">No favourites yet.</Alert>
+        ) : (
+          favourites.map((company, index) => (
+            <ListGroup.Item
+              key={index}
+              className="d-flex justify-content-between align-items-center"
+            >
+              <span>{company}</span>
+              <Button
+                variant="danger"
+                onClick={() => dispatch(removeFromFavourite(company))}
+              >
+                Remove
+              </Button>
+            </ListGroup.Item>
+          ))
+        )}
+      </ListGroup>
     </Container>
-  )
-}
+  );
+};
 
-export default Favourites
+export default Favourites;
